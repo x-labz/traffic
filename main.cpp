@@ -9,31 +9,36 @@ using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 using PB = Pokitto::Buttons;
 
-int main() {
 
+int main() {
 
     PD::persistence = true;
     PD::invisiblecolor = 0;
     initEcs();
 
     LOG("started \n");
-    LOG("components", vPosition.size());
 
-    position_t test = * (position_t * )(vEntities.at(0).components.at(0).component);
-    LOG("test:", test.x);
+    LOG(( * ((position_t * )(entities[0].components[POS]))).y, "\n");
+    LOG(( * ((position_t * )(entities[1].components[POS]))).y, "\n");
+
 
     PC::begin();
 
     while (PC::isRunning()) {
         if (!PC::update())
             continue;
-        // renderAll(  );
+        //  renderAll(  );
+
+        LOG(( * ((position_t * )(entities[0].components[POS]))).y, "\n");
+        LOG(( * ((position_t * )(entities[1].components[POS]))).y, "\n");
+
         PD::color = rand() % (15);
-        position_t pos = *(position_t *)(vEntities.at(0).components.at(0).component) ;
-        PD::drawRectangle(pos.x, pos.y, 10, 10);
-        
-        pos = *(position_t *)(vEntities.at(1).components.at(0).component);
-        PD::drawRectangle(pos.x, pos.y, 10, 10);
+        position_t * pos = (position_t * )(entities[0].components[POS]);
+        PD::drawRectangle(pos->x, pos->y, 10, 10);
+
+        PD::color = rand() % (15);
+        pos = (position_t * )(entities[1].components[POS]);
+        PD::drawRectangle(pos->x, pos->y, 10, 10);
     }
 
     return 0;

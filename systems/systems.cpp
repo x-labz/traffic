@@ -37,7 +37,6 @@ void renderAll() {
 
     //     renderNode(pos);
     // }
-    renderNode(*(position_t *)(vEntities.at(0).components.at(0).component));
-    renderNode(*(position_t *)(vEntities.at(1).components.at(0).component));
+
     
 }

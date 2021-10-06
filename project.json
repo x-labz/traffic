@@ -423,6 +423,9 @@
 		},
 		"\\systems\\systems.cpp": {
 			"sdcard": false
+		},
+		"\\traffic.exe": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,
