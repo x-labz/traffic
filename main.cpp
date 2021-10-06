@@ -29,8 +29,8 @@ int main() {
             continue;
         //  renderAll(  );
 
-        LOG(( * ((position_t * )(entities[0].components[0]))).y, "\n");
-        LOG(( * ((position_t * )(entities[1].components[0]))).y, "\n");
+        // LOG(( * ((position_t * )(entities[0].components[0]))).y, "\n");
+        // LOG(( * ((position_t * )(entities[1].components[0]))).y, "\n");
 
         PD::color = rand() % (15);
         position_t * pos = (position_t * )(entities[0].components[0]);

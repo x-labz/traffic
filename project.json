@@ -426,6 +426,15 @@
 		},
 		"\\traffic.exe": {
 			"sdcard": false
+		},
+		"\\_disp": {
+			"sdcard": false
+		},
+		"\\_disp\\Adafruit_SSD1306.cpp": {
+			"sdcard": false
+		},
+		"\\_disp\\Adafruit_SSD1306.h": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,
