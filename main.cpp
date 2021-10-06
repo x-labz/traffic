@@ -29,15 +29,15 @@ int main() {
             continue;
         //  renderAll(  );
 
-        LOG(( * ((position_t * )(entities[0].components[POS]))).y, "\n");
-        LOG(( * ((position_t * )(entities[1].components[POS]))).y, "\n");
+        LOG(( * ((position_t * )(entities[0].components[0]))).y, "\n");
+        LOG(( * ((position_t * )(entities[1].components[0]))).y, "\n");
 
         PD::color = rand() % (15);
-        position_t * pos = (position_t * )(entities[0].components[POS]);
+        position_t * pos = (position_t * )(entities[0].components[0]);
         PD::drawRectangle(pos->x, pos->y, 10, 10);
 
         PD::color = rand() % (15);
-        pos = (position_t * )(entities[1].components[POS]);
+        pos = (position_t * )(entities[1].components[0]);
         PD::drawRectangle(pos->x, pos->y, 10, 10);
     }
 

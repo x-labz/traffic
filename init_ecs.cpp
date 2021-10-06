@@ -19,8 +19,8 @@ void initEcs(void) {
         1,
         {}
     };
-    e1.components[POS] = &p1;
-    e1.components[VIEW] = &v1;
+    e1.components[POS] = &componentsPos[0];
+    e1.components[VIEW] = &componentsView[0];
 
     entities[0] = e1 ;
     
@@ -39,8 +39,8 @@ void initEcs(void) {
         2,
         {}
     };
-    e2.components[POS] = &p2;
-    e2.components[VIEW] = &v2;
+    e2.components[POS] = &componentsPos[1];
+    e2.components[VIEW] = &componentsView[1];
 
     entities[1] = e2 ;
     
