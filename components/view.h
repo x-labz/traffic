@@ -2,7 +2,7 @@
 
 #include <Pokitto.h>
 
-enum renderTypes { JUNCTION };
+enum renderTypes { JUNCTION, PATH_RENDER };
 
 struct view_t {
     uint16_t entityID;

@@ -465,6 +465,30 @@
 		},
 		"\\data\\prepare.cpp": {
 			"sdcard": false
+		},
+		"\\components\\view - Copy.h": {
+			"sdcard": false
+		},
+		"\\components\\view - Copy.cpp": {
+			"sdcard": false
+		},
+		"\\components\\width.cpp": {
+			"sdcard": false
+		},
+		"\\components\\width.h": {
+			"sdcard": false
+		},
+		"\\components\\width - Copy.cpp": {
+			"sdcard": false
+		},
+		"\\components\\width - Copy.h": {
+			"sdcard": false
+		},
+		"\\components\\path.cpp": {
+			"sdcard": false
+		},
+		"\\components\\path.h": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

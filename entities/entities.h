@@ -4,7 +4,7 @@
 
 #define COMPONENTS_NUM 10
 
-enum componentTypes { POS, VIEW };
+enum componentTypes { POS, VIEW, WIDTH, PATH };
 
 
 struct entity_t {
