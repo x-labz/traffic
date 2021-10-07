@@ -1,6 +1,6 @@
 #include <data/prepare.h>
 
-#define ROAD_WIDTH 25
+#define ROAD_WIDTH 20
 
 void initJunctions(genPointers * poi) {
 
@@ -8,14 +8,17 @@ void initJunctions(genPointers * poi) {
         10,
         10,
         
-        200,
+        180,
         10,
         
         10,
         120,
         
-        200,
-        120
+        180,
+        120,
+        
+        -50,
+        10
     };
 
     for (uint16_t i = 0; i < SIZE(junc); i+=2) {
@@ -55,10 +58,13 @@ void initPaths(genPointers * poi) {
         2,
         
         2,
-        3,
+        4,
         
+        3,
         1,
-        4 
+        
+        5,
+        1
     };
 
     for (uint16_t i = 0; i < SIZE(paths); i+=2) {

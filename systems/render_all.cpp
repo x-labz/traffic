@@ -10,12 +10,12 @@ using PD = Pokitto::Display;
 void renderNode(position_t * pos_p, width_t * width_p) {
     //  LOG( "pos:", pos.x, ",", pos.y , "\n" ) ;
     PD::color = 1;
-    PD::drawRectangle(pos_p->x, pos_p->y, width_p->width, width_p->width);
+    PD::fillRectangle(pos_p->x, pos_p->y, width_p->width, width_p->width);
 }
 
-void renderPath(int16_t start_x, int16_t start_y, int16_t end_x, int16_t end_y) {
-    PD::color = 1;
-    PD::drawLine(start_x, start_y, end_x, end_y);
+void renderPath(int16_t start_x, int16_t start_y, int16_t w_x, int16_t w_y ) {
+    PD::color = 2;
+    PD::fillRect(start_x, start_y, w_x  , w_y);
 }
 
 void renderAll(entity_t * items, uint32_t size) {
@@ -37,26 +37,44 @@ void renderAll(entity_t * items, uint32_t size) {
                 }
             case PATH_RENDER:
                 {
-                    int16_t width = ((width_t * ) entity.components[WIDTH]) ->width;
+                    
                     uint16_t startID = ((path_t * ) entity.components[PATH]) ->start;
                     uint16_t endID = ((path_t * ) entity.components[PATH]) ->end;
-                    LOG("start:", startID, ", end:", endID,"w:", width, "\n");
+                    // LOG("start:", startID, ", end:", endID,"w:", width, "\n");
                     position_t * startPos_p = nullptr;
                     position_t * endPos_p = nullptr;
+                    int16_t width = 0 ;
                     for (uint32_t i = 0; i != SIZE(entities); i++) {
-                        if (entities[i].entityID == startID) startPos_p = (position_t * )(entities[i].components[POS]);
+                        if (entities[i].entityID == startID) {
+                            startPos_p = (position_t * )(entities[i].components[POS]);
+                            width = ((width_t * ) entities[i].components[WIDTH])->width ;
+                        }
                         if (entities[i].entityID == endID) endPos_p = (position_t * )(entities[i].components[POS]);
                     }
                     if (startPos_p == nullptr || endPos_p == nullptr) {
                         LOG("node not found\n");
                         break;
                     }
-                    int16_t revX = startPos_p->x < endPos_p->x ? 1 : -1;
-                    int16_t revY = startPos_p->y < endPos_p->y ? 1 : -1;
+                     
+                    // int16_t revX = startPos_p->x < endPos_p->x ? 1 : -1;
+                    // int16_t revY = startPos_p->y < endPos_p->y ? 1 : -1;
                     
-                    LOG("start:", startPos_p->x," ", startPos_p->y, ", end:", endPos_p->x," ", endPos_p->y, "w:", width, "rX:",revX, " ", revY, "\n");
-
-                    renderPath(startPos_p->x + width * revX, startPos_p->y + width * revY, endPos_p->x - width * revX, endPos_p->y - width * revY);
+                    int16_t startX = startPos_p->x < endPos_p->x ? startPos_p->x : endPos_p->x ;
+                    int16_t startY = startPos_p->y < endPos_p->y ? startPos_p->y : endPos_p->y ;
+                    
+                    int w_x = abs(startPos_p->x - endPos_p->x);
+                    int w_y = abs(startPos_p->y - endPos_p->y);
+                    
+                    bool isHorizontal = startPos_p->y == endPos_p->y ;
+                    
+                    // LOG("start:", startPos_p->x," ", startPos_p->y, ", end:", endPos_p->x," ", endPos_p->y, "w:", width, "rX:",revX, " ", revY, "\n");
+                    if ( isHorizontal ){
+                        renderPath(startX + width, startY , w_x - width ,  width  );
+                    }
+                    else {
+                        renderPath(startX , startY + width ,  width , w_y -  width  );
+                        // LOG("start:", startX," ", startY, ", w:", w," ",  width,  "\n");
+                    }
                     break;
                 }
         }

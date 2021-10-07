@@ -7,6 +7,4 @@ void runSystems( entity_t * items, uint16_t size ) {
     renderAll(items, size) ;
     
     
-
-    
 }
