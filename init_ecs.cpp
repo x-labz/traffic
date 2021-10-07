@@ -1,48 +1,21 @@
-
 #include "init_ecs.h"
-#include "components/pos.h"
-#include <global_store.h>
-#include "entities/entities.h"
-#include <LibLog>
 
 void initEcs(void) {
 
-    position_t p1 = fPosition(1, 10, 23);
+    genPointers poi = { 0, 0 ,0 } ;
 
-    LOG(  p1.x  , "\n" ) ;
-    view_t v1 = fView(1, JUNCTION);
+    uint16_t size = SIZE(entities);
+    for (uint16_t i = 0; i != size; i++) {
+        entity_t e = {
+            0,
+            {}
+        };
+        entities[i] = e;
+    }
 
-    componentsPos[0] = p1;
-    componentsView[0] = v1 ;
-
-    entity_t e1 = {
-        1,
-        {}
-    };
-    e1.components[POS] = &componentsPos[0];
-    e1.components[VIEW] = &componentsView[0];
-
-    entities[0] = e1 ;
+    initJunctions(&poi) ;
     
-    LOG( (*((position_t *)(entities[0].components[POS]))).y ,"\n" ) ;
-    
-    // ---------------
+    LOG("POI:", poi.entity_p ,"\n") ;
 
-    position_t p2 = fPosition(2, 40, 50);
-
-    view_t v2 = fView(2, JUNCTION);
-
-    componentsPos[1] = p2;
-    componentsView[1] = v2 ;
-
-    entity_t e2 = {
-        2,
-        {}
-    };
-    e2.components[POS] = &componentsPos[1];
-    e2.components[VIEW] = &componentsView[1];
-
-    entities[1] = e2 ;
-    
-    LOG( (*((position_t *)(entities[1].components[POS]))).y ,"\n" ) ;
+   
 }

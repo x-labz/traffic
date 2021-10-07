@@ -435,6 +435,36 @@
 		},
 		"\\_disp\\Adafruit_SSD1306.h": {
 			"sdcard": false
+		},
+		"\\_disp\\test.cpp": {
+			"sdcard": false
+		},
+		"\\_disp\\test.h": {
+			"sdcard": false
+		},
+		"\\systems\\systems - Copy.cpp": {
+			"sdcard": false
+		},
+		"\\systems\\systems - Copy.h": {
+			"sdcard": false
+		},
+		"\\systems\\render.h": {
+			"sdcard": false
+		},
+		"\\systems\\render_all.cpp": {
+			"sdcard": false
+		},
+		"\\systems\\render_all.h": {
+			"sdcard": false
+		},
+		"\\data": {
+			"sdcard": false
+		},
+		"\\data\\prepare.h": {
+			"sdcard": false
+		},
+		"\\data\\prepare.cpp": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

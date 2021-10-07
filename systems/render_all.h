@@ -4,9 +4,9 @@
 #include "components/pos.h"
 #include "components/view.h"
 #include "global_store.h"
-#include <algorithm>    // std::find_if
+#include "entities/entities.h"  
 
 void renderNode(position_t pos); 
 
-void runSystems( entity_t * , uint16_t size ) ;
+void renderAll( entity_t * items, uint32_t size ) ;
  
