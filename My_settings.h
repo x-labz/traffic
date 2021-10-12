@@ -14,7 +14,7 @@
 // https://talk.pokitto.com/t/wiki-5-pokitto-screen-modes/1180
 // Optional. Default is MODE_FAST_16COLOR.
 //#define PROJ_SCREENMODE MODE_FAST_16COLOR
-//#define PROJ_SCREENMODE MODE_HI_4COLOR
+// #define PROJ_SCREENMODE MODE_HI_4COLOR
 //#define PROJ_SCREENMODE MODE13
 #define PROJ_SCREENMODE MODE15
 //#define PROJ_SCREENMODE MODE64
@@ -46,13 +46,14 @@
 //   HIGH_RAM_ON    - Simply enable the RAM hardware
 //   HIGH_RAM_MUSIC - Enable and move the sound buffers to high RAM
 // Default is HIGH_RAM_OFF.
-#define PROJ_HIGH_RAM HIGH_RAM_OFF
-
+// #define PROJ_HIGH_RAM HIGH_RAM_OFF
+#define PROJ_HIGH_RAM HIGH_RAM_ON
 
 // Disabling persistence will clear the framebuffer
 // automatically when it is sent to the LCD.
 // Optional. Can be true or false, default is false.
 #define PROJ_PERSISTENCE true
+
 
 
 // ---- SECTION: SOUND ----
@@ -70,7 +71,7 @@
 
 // Enable streaming music from SD
 // Optional. Comment to disable.
-#define PROJ_ENABLE_SD_MUSIC
+// #define PROJ_ENABLE_SD_MUSIC
 
 
 // Defines the rate your audio has been encoded with.

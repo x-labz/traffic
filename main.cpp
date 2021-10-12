@@ -13,6 +13,7 @@ int main() {
 
     PD::persistence = true;
     PD::invisiblecolor = 0;
+    
     initEcs();
     
     uint16_t size = SIZE( entities ) ;

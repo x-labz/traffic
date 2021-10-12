@@ -2,9 +2,9 @@
 
 #define SIZE(_Array) (sizeof(_Array) / sizeof(_Array[0]))
 
-#define MAX_ENT 10
-#define MAX_POS 10
-#define MAX_VIEW 10
+#define MAX_ENT 35
+#define MAX_POS 35
+#define MAX_VIEW 35
 #define MAX_WIDTH 10
 #define MAX_PATH 10
 
@@ -20,6 +20,7 @@ struct genPointers {
     uint16_t view_p;
     uint16_t width_p;
     uint16_t path_p;
+ 
 } ;
 
 extern entity_t entities[MAX_ENT] ;

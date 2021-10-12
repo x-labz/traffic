@@ -4,7 +4,7 @@
 
 void initJunctions(genPointers * poi) {
 
-    uint16_t junc[] = {
+    const uint16_t junc[] = {
         10,
         10,
         
@@ -53,7 +53,7 @@ void initJunctions(genPointers * poi) {
 
 void initPaths(genPointers * poi) {
 
-    uint16_t paths[] = {
+    const uint16_t paths[] = {
         1,
         2,
         
@@ -91,4 +91,28 @@ void initPaths(genPointers * poi) {
         poi->view_p++;
     }
 
+}
+
+void initCars( genPointers * poi ) {
+        uint16_t id = poi->entity_p +1 ;
+        
+        position_t p = fPosition( id, 50, 50);
+        view_t v = fView(id, CAR_RENDER);
+        
+        componentsPos[poi->position_p] = p;
+        componentsView[poi->view_p] = v;
+      
+        entity_t e = {
+            id,
+            {}
+        };
+        e.components[POS] = & componentsPos[poi->position_p];
+        e.components[VIEW] = & componentsView[poi->view_p];
+        
+        entities[id] = e;
+        
+        poi->entity_p++;
+        poi->position_p++;
+        poi->view_p++;
+       
 }

@@ -489,6 +489,9 @@
 		},
 		"\\components\\path.h": {
 			"sdcard": false
+		},
+		"\\components\\move.h": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

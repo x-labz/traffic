@@ -16,11 +16,15 @@ void initEcs(void) {
     initJunctions(&poi) ;
     initPaths(&poi);
     
+    initCars(&poi);
+    
     LOG("POI:", poi.entity_p ,"\n") ;
     LOG( poi.position_p ,"\n") ;
     LOG( poi.view_p ,"\n") ;
     LOG( poi.width_p ,"\n") ;
     LOG( poi.path_p ,"\n") ;
+    
+    LOG("SIZES:", sizeof (entities),",", sizeof(componentsPos),",", sizeof(componentsView),",", sizeof(componentsWidth),",", sizeof(componentsPath),"\n" ) ;
 
    
 }

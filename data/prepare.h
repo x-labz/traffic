@@ -9,3 +9,4 @@
 
 void initJunctions(genPointers * poi);
 void initPaths(genPointers * poi) ;
+void initCars( genPointers * poi );

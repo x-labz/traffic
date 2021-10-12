@@ -18,6 +18,11 @@ void renderPath(int16_t start_x, int16_t start_y, int16_t w_x, int16_t w_y ) {
     PD::fillRect(start_x, start_y, w_x  , w_y);
 }
 
+void renderCar(int16_t start_x, int16_t start_y) {
+    PD::color = 3;
+    PD::fillRect(start_x, start_y, 10  , 5);
+}
+
 void renderAll(entity_t * items, uint32_t size) {
 
     for (uint16_t i = 0; i != size; i++) {
@@ -56,9 +61,6 @@ void renderAll(entity_t * items, uint32_t size) {
                         break;
                     }
                      
-                    // int16_t revX = startPos_p->x < endPos_p->x ? 1 : -1;
-                    // int16_t revY = startPos_p->y < endPos_p->y ? 1 : -1;
-                    
                     int16_t startX = startPos_p->x < endPos_p->x ? startPos_p->x : endPos_p->x ;
                     int16_t startY = startPos_p->y < endPos_p->y ? startPos_p->y : endPos_p->y ;
                     
@@ -77,6 +79,10 @@ void renderAll(entity_t * items, uint32_t size) {
                     }
                     break;
                 }
+            case CAR_RENDER: {
+                position_t * pos = (position_t * )entity.components[POS] ;
+                renderCar(pos->x, pos->y) ;
+            }
         }
     }
 
