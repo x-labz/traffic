@@ -3,13 +3,14 @@
 #include "init_ecs.h"
 #include "systems/systems.h"
 #include <global_store.h>
+#include <functional>
 
 using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 using PB = Pokitto::Buttons;
 
-template <typename entity_search_t>
-int16_t findEntity(entity_search_t *collection, uint16_t size, /*entity_search_t&&*/ std::function<bool(entity_search_t)> itterator)
+template <typename T>
+int16_t findEntity(T* collection, uint16_t size, /*entity_search_t&&*/ /*std::*/T&& , function<bool(T)> itterator)
 {
     uint16_t i = 0;
 
