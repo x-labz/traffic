@@ -492,6 +492,15 @@
 		},
 		"\\components\\move.h": {
 			"sdcard": false
+		},
+		"\\README.md": {
+			"sdcard": false
+		},
+		"\\EEP.ROM": {
+			"sdcard": false
+		},
+		"\\components\\junction.h": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

@@ -1,10 +1,16 @@
-#pragma once 
+#pragma once
 
 #include <Pokitto.h>
 
-enum renderTypes { JUNCTION, PATH_RENDER, CAR_RENDER };
+enum renderTypes
+{
+    JUNCTION_RENDERER,
+    PATH_RENDER,
+    CAR_RENDER
+};
 
-struct view_t {
+struct view_t
+{
     uint16_t entityID;
     renderTypes renderType;
 };
