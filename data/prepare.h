@@ -5,7 +5,6 @@
 #include "components/view.h"
 #include "components/junction.h"
 #include "init_ecs.h"
-#include "entities/entities.h"
 
 void initJunctions(genPointers *poi);
 void initPaths(genPointers *poi);

@@ -12,7 +12,6 @@
 #include "components/view.h"
 #include "components/junction.h"
 #include "components/path.h"
-#include "entities/entities.h"
 
 struct genPointers
 {
@@ -26,11 +25,11 @@ struct genPointers
 struct global_t
 {
     uint8_t junctionWidth;
+    uint16_t entityCount;
+    position_t componentsPos[MAX_POS];
+    view_t componentsView[MAX_VIEW];
+    junction_t componentsJunction[MAX_JUNCTION];
+    path_t componentsPath[MAX_PATH];
 };
 
-extern entity_t entities[MAX_ENT];
-extern position_t componentsPos[MAX_POS];
-extern view_t componentsView[MAX_VIEW];
-extern junction_t componentsJunction[MAX_JUNCTION];
-extern path_t componentsPath[MAX_PATH];
 extern global_t globals;

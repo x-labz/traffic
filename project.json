@@ -501,6 +501,15 @@
 		},
 		"\\components\\junction.h": {
 			"sdcard": false
+		},
+		"\\utils": {
+			"sdcard": false
+		},
+		"\\utils\\collections.h": {
+			"sdcard": false
+		},
+		"\\utils\\collections.cpp": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

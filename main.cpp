@@ -3,31 +3,12 @@
 #include "init_ecs.h"
 #include "systems/systems.h"
 #include <global_store.h>
-#include <functional>
+
+#include "utils/collections.h"
 
 using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 using PB = Pokitto::Buttons;
-
-template <typename T>
-int16_t findEntity(T* collection, uint16_t size, /*entity_search_t&&*/ /*std::*/T&& , function<bool(T)> itterator)
-{
-    uint16_t i = 0;
-
-    if (size < 1)
-        return -1;
-
-    do
-    {
-        if (itterator(collection[i]))
-        {
-            return i;
-        }
-        i++;
-    } while (i != size);
-
-    return -1;
-}
 
 int main()
 {
@@ -37,14 +18,22 @@ int main()
 
     initEcs();
 
-    uint16_t size = SIZE(entities);
+    uint16_t pos_size = SIZE(globals.componentsPos);
 
     LOG("started \n");
+    LOG("pos size :", pos_size, "\n");
 
-    int16_t idx = findEntity(componentsPos, SIZE(componentsPos), [](position_t item) -> bool
-                             { return item.entityID == 2; });
+    position_t result;
+    bool success = findEntity(
+        globals.componentsPos, SIZE(globals.componentsPos), &result, (std::function<bool(position_t)>)[](position_t item)->bool { return item.entityID == 2; });
 
-    LOG("item idx:", idx);
+    LOG("item success:", success, "\n");
+    if (success)
+    {
+        LOG(result.x, "\n");
+    }
+
+    LOG("END");
 
     PC::begin();
 
@@ -53,7 +42,7 @@ int main()
         if (!PC::update())
             continue;
 
-        runSystems(entities, size);
+        runSystems();
     }
 
     return 0;

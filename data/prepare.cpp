@@ -27,18 +27,9 @@ void initJunctions(genPointers *poi)
         view_t v = fView(id, JUNCTION_RENDERER);
         junction_t junction = {id, globals.junctionWidth};
 
-        componentsPos[poi->position_p] = p;
-        componentsView[poi->view_p] = v;
-        componentsJunction[poi->junction_p] = junction;
-
-        entity_t e = {
-            id,
-            {}};
-        e.components[POS] = &componentsPos[poi->position_p];
-        e.components[VIEW] = &componentsView[poi->view_p];
-        e.components[JUNCTION_RENDERER] = &componentsJunction[poi->junction_p];
-
-        entities[id] = e;
+        globals.componentsPos[poi->position_p] = p;
+        globals.componentsView[poi->view_p] = v;
+        globals.componentsJunction[poi->junction_p] = junction;
 
         poi->entity_p++;
         poi->position_p++;
@@ -71,16 +62,8 @@ void initPaths(genPointers *poi)
         path_t path = {id, paths[i], paths[i + 1]};
         view_t v = fView(id, PATH_RENDER);
 
-        componentsPath[poi->path_p] = path;
-        componentsView[poi->view_p] = v;
-
-        entity_t e = {
-            id,
-            {}};
-        e.components[PATH] = &componentsPath[poi->path_p];
-        e.components[VIEW] = &componentsView[poi->view_p];
-
-        entities[id] = e;
+        globals.componentsPath[poi->path_p] = path;
+        globals.componentsView[poi->view_p] = v;
 
         poi->entity_p++;
         poi->path_p++;
@@ -95,16 +78,8 @@ void initCars(genPointers *poi)
     position_t p = fPosition(id, 50, 50);
     view_t v = fView(id, CAR_RENDER);
 
-    componentsPos[poi->position_p] = p;
-    componentsView[poi->view_p] = v;
-
-    entity_t e = {
-        id,
-        {}};
-    e.components[POS] = &componentsPos[poi->position_p];
-    e.components[VIEW] = &componentsView[poi->view_p];
-
-    entities[id] = e;
+    globals.componentsPos[poi->position_p] = p;
+    globals.componentsView[poi->view_p] = v;
 
     poi->entity_p++;
     poi->position_p++;
