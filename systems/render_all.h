@@ -5,7 +5,8 @@
 #include "components/view.h"
 #include "global_store.h"
 
-void renderNode(position_t pos);
-void renderPath(int16_t start_x, int16_t start_y, int16_t end_x, int16_t end_y);
+void renderNode(uint16_t id);
+void renderPath(uint16_t id);
+void renderCar(uint16_t id);
 
 void renderAll();

@@ -7,104 +7,149 @@
 
 using PD = Pokitto::Display;
 
-void renderNode(position_t *pos_p, junction_t *junction_p)
+void renderNode(uint16_t id)
 {
-    //  LOG( "pos:", pos.x, ",", pos.y , "\n" ) ;
+    position_t pos;
+    bool success = findEntity(
+        globals.componentsPos,
+        SIZE(globals.componentsPos), &pos, (std::function<bool(position_t)>)[id](position_t item)->bool { return item.entityID == id; });
+    if (!success)
+    {
+        LOG("can't find pos:", id, "\n");
+        return;
+    }
+    junction_t junc;
+    success = findEntity(
+        globals.componentsJunction,
+        SIZE(globals.componentsJunction), &junc, (std::function<bool(junction_t)>)[id](junction_t item)->bool { return item.entityID == id; });
+    if (!success)
+    {
+        LOG("can't find junction:", id, "\n");
+        return;
+    }
+
     PD::color = 1;
-    PD::fillRectangle(pos_p->x, pos_p->y, junction_p->width, junction_p->width);
+    PD::fillRectangle(pos.x, pos.y, junc.width, junc.width);
 }
 
-void renderPath(int16_t start_x, int16_t start_y, int16_t w_x, int16_t w_y)
+void renderPath(uint16_t id)
 {
+    path_t path;
+    bool success = findEntity(
+        globals.componentsPath,
+        SIZE(globals.componentsPath), &path, (std::function<bool(path_t)>)[id](path_t item)->bool { return item.entityID == id; });
+    if (!success)
+    {
+        LOG("can't find path:", id, "\n");
+        return;
+    }
+
+    uint16_t startID = path.start;
+    uint16_t endID = path.end;
+    // LOG("start:", startID, ", end:", endID,"w:", width, "\n");
+
+    junction_t junc;
+    success = findEntity(
+        globals.componentsJunction,
+        SIZE(globals.componentsJunction), &junc, (std::function<bool(junction_t)>)[startID](junction_t item)->bool { return item.entityID == startID; });
+    if (!success)
+    {
+        LOG("can't find junction:", id, "\n");
+        return;
+    }
+
+    position_t startPos;
+    position_t endPos;
+    int16_t width = junc.width;
+    success = findEntity(
+        globals.componentsPos,
+        SIZE(globals.componentsPos), &startPos, (std::function<bool(position_t)>)[startID](position_t item)->bool { return item.entityID == startID; });
+    if (!success)
+    {
+        LOG("can't find start pos:", id, "\n");
+        return;
+    }
+    success = findEntity(
+        globals.componentsPos,
+        SIZE(globals.componentsPos), &endPos, (std::function<bool(position_t)>)[endID](position_t item)->bool { return item.entityID == endID; });
+    if (!success)
+    {
+        LOG("can't find end pos:", id, "\n");
+        return;
+    }
+
+    int16_t startX = startPos.x < endPos.x ? startPos.x : endPos.x;
+    int16_t startY = startPos.y < endPos.y ? startPos.y : endPos.y;
+
+    int w_x = abs(startPos.x - endPos.x);
+    int w_y = abs(startPos.y - endPos.y);
+
+    bool isHorizontal = startPos.y == endPos.y;
+
     PD::color = 2;
-    PD::fillRect(start_x, start_y, w_x, w_y);
+    // LOG("start:", startPos_p->x," ", startPos_p->y, ", end:", endPos_p->x," ", endPos_p->y, "w:", width, "rX:",revX, " ", revY, "\n");
+    if (isHorizontal)
+    {
+        PD::fillRect(startX + width, startY, w_x - width, width);
+    }
+    else
+    {
+        PD::fillRect(startX, startY + width, width, w_y - width);
+    }
 }
 
-void renderCar(int16_t start_x, int16_t start_y)
+void renderCar(uint16_t id)
 {
+
+    position_t pos;
+    bool success = findEntity(
+        globals.componentsPos,
+        SIZE(globals.componentsPos), &pos, (std::function<bool(position_t)>)[id](position_t item)->bool { return item.entityID == id; });
+    if (!success)
+    {
+        LOG("can't find car pos:", id, "\n");
+        return;
+    }
+
     PD::color = 3;
-    PD::fillRect(start_x, start_y, 10, 5);
+    PD::fillRect(pos.x, pos.y, 10, 5);
 }
 
 void renderAll()
 {
-
-    for (uint16_t id = 0; id != globals.entityCount; id++)
+    // LOG("\n");
+    for (uint16_t id = 1; id <= globals.entityCount; id++)
     {
         view_t view;
         bool success = findEntity(
             globals.componentsView,
             SIZE(globals.componentsView), &view, (std::function<bool(view_t)>)[id](view_t item)->bool { return item.entityID == id; });
         if (!success)
+        {
+            LOG("view not found:", id, "\n");
             continue;
+        }
 
         uint32_t viewType = view.renderType;
-        // LOG( "view Type:", viewType, "\n" ) ;
+        // LOG("view found:", id, ",", view.renderType, " ");
+
         switch (viewType)
         {
         case JUNCTION_RENDERER:
         {
-            position_t pos;
-            success = findEntity(
-                globals.componentsPos,
-                SIZE(globals.componentsPos), &pos, (std::function<bool(position_t)>)[id](position_t item)->bool { return item.entityID == id; });
-            if (!success)
-                break;
-            // position_t pos =
-            // junction_t junc =
-            // renderNode(pos, junc);
+            renderNode(id);
             break;
         }
-            // case PATH_RENDER:
-            // {
-
-            //     uint16_t startID = ((path_t *)entity.components[PATH])->start;
-            //     uint16_t endID = ((path_t *)entity.components[PATH])->end;
-            //     // LOG("start:", startID, ", end:", endID,"w:", width, "\n");
-            //     position_t *startPos_p = nullptr;
-            //     position_t *endPos_p = nullptr;
-            //     int16_t width = 0;
-            //     for (uint32_t i = 0; i != SIZE(entities); i++)
-            //     {
-            //         if (entities[i].entityID == startID)
-            //         {
-            //             startPos_p = (position_t *)(entities[i].components[POS]);
-            //             width = ((junction_t *)entities[i].components[JUNCTION])->width;
-            //         }
-            //         if (entities[i].entityID == endID)
-            //             endPos_p = (position_t *)(entities[i].components[POS]);
-            //     }
-            //     if (startPos_p == nullptr || endPos_p == nullptr)
-            //     {
-            //         LOG("node not found\n");
-            //         break;
-            //     }
-
-            //     int16_t startX = startPos_p->x < endPos_p->x ? startPos_p->x : endPos_p->x;
-            //     int16_t startY = startPos_p->y < endPos_p->y ? startPos_p->y : endPos_p->y;
-
-            //     int w_x = abs(startPos_p->x - endPos_p->x);
-            //     int w_y = abs(startPos_p->y - endPos_p->y);
-
-            //     bool isHorizontal = startPos_p->y == endPos_p->y;
-
-            //     // LOG("start:", startPos_p->x," ", startPos_p->y, ", end:", endPos_p->x," ", endPos_p->y, "w:", width, "rX:",revX, " ", revY, "\n");
-            //     if (isHorizontal)
-            //     {
-            //         renderPath(startX + width, startY, w_x - width, width);
-            //     }
-            //     else
-            //     {
-            //         renderPath(startX, startY + width, width, w_y - width);
-            //         // LOG("start:", startX," ", startY, ", w:", w," ",  width,  "\n");
-            //     }
-            //     break;
-            // }
-            // case CAR_RENDER:
-            // {
-            //     position_t *pos = (position_t *)entity.components[POS];
-            //     renderCar(pos->x, pos->y);
-            // }
+        case PATH_RENDER:
+        {
+            renderPath(id);
+            break;
+        }
+        case CAR_RENDER:
+        {
+            // LOG("CAR:", id, "\n");
+            renderCar(id);
+        }
         }
     }
 }

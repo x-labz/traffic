@@ -20,9 +20,7 @@ void initJunctions(genPointers *poi)
 
     for (uint16_t i = 0; i < SIZE(junc); i += 2)
     {
-
         uint16_t id = poi->entity_p + 1;
-
         position_t p = fPosition(id, junc[i], junc[i + 1]);
         view_t v = fView(id, JUNCTION_RENDERER);
         junction_t junction = {id, globals.junctionWidth};

@@ -9,9 +9,11 @@
 using PC = Pokitto::Core;
 using PD = Pokitto::Display;
 using PB = Pokitto::Buttons;
+// using PS = Pokitto::Sound ;
 
 int main()
 {
+    // PS::ampEnable(1);
 
     PD::persistence = true;
     PD::invisiblecolor = 0;

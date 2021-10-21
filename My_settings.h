@@ -47,7 +47,7 @@
 //   HIGH_RAM_MUSIC - Enable and move the sound buffers to high RAM
 // Default is HIGH_RAM_OFF.
 // #define PROJ_HIGH_RAM HIGH_RAM_OFF
-#define PROJ_HIGH_RAM HIGH_RAM_ON
+#define PROJ_HIGH_RAM HIGH_RAM_MUSIC
 
 // Disabling persistence will clear the framebuffer
 // automatically when it is sent to the LCD.
@@ -83,7 +83,7 @@
 
 // Automatically restart streaming music when it ends.
 // Optional. Default is 1.
-#define PROJ_STREAM_LOOP 1
+#define PROJ_STREAM_LOOP 0
 
 
 // Tell the sound system which SD library to use.
@@ -126,7 +126,7 @@
 // Skips the initial Pokitto/Loader/Volume screens.
 // Don't release binaries with this enabled!
 // Optional. Can be 0 or 1, default is 0.
-#define PROJ_DEVELOPER_MODE 0
+#define PROJ_DEVELOPER_MODE 1
 
 
 // Tells the Tilemap library if tiles are stored in

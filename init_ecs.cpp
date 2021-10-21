@@ -12,7 +12,7 @@ void initEcs(void)
 
     initCars(&poi);
 
-    globals.entityCount = poi.entity_p - 1;
+    globals.entityCount = poi.entity_p;
 
     LOG("POI:", poi.entity_p, "\n");
     LOG(poi.position_p, "\n");
