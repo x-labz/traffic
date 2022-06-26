@@ -17,4 +17,11 @@ void initStore()
     globals.paths[1] = {
         {0, 2},
         getDir(globals.junctions[0], globals.junctions[2])};
+
+    globals.cars[0] = {
+        true,
+        VERTICAL,
+        0,
+        0
+    };
 }

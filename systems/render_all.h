@@ -7,6 +7,6 @@
 
 void renderJunction(junction_t junction);
 void renderPath(path_t path);
-void renderCar(uint16_t id);
+void renderCar(car_t car);
 
 void renderAll();

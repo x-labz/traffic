@@ -12,6 +12,7 @@ struct global_t
 {
     junction_t junctions[8];
     path_t paths[8];
+    car_t cars[64] ;
 };
 
 void initStore(void) ;

@@ -26,7 +26,8 @@ int main()
         if (!PC::update())
             continue;
 
-        runSystems();
+        uint32_t time = PC::getTime();
+        runSystems(time);
     }
 
     return 0;
