@@ -15,7 +15,7 @@ void initJunctions(genPointers *poi)
         180,
         120,
 
-        -50,
+        0,
         10};
 
     for (uint16_t i = 0; i < SIZE(junc); i += 2)
