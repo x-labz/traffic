@@ -510,6 +510,18 @@
 		},
 		"\\utils\\collections.cpp": {
 			"sdcard": false
+		},
+		"\\data\\game-types.h": {
+			"sdcard": false
+		},
+		"\\data\\store.h": {
+			"sdcard": false
+		},
+		"\\data\\store.cpp": {
+			"sdcard": false
+		},
+		"\\utils\\init-utils.h": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

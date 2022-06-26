@@ -1,155 +1,62 @@
+#include "data/store.h"
 #include "render_all.h"
 #include <LibLog>
-#include "components/view.h"
-#include "components/junction.h"
-
-#include "utils/collections.h"
 
 using PD = Pokitto::Display;
 
-void renderNode(uint16_t id)
+void renderJunction(junction_t junction)
 {
-    position_t pos;
-    bool success = findEntity(
-        globals.componentsPos,
-        SIZE(globals.componentsPos), &pos, (std::function<bool(position_t)>)[id](position_t item)->bool { return item.entityID == id; });
-    if (!success)
-    {
-        LOG("can't find pos:", id, "\n");
-        return;
-    }
-    junction_t junc;
-    success = findEntity(
-        globals.componentsJunction,
-        SIZE(globals.componentsJunction), &junc, (std::function<bool(junction_t)>)[id](junction_t item)->bool { return item.entityID == id; });
-    if (!success)
-    {
-        LOG("can't find junction:", id, "\n");
-        return;
-    }
 
     PD::color = 1;
-    PD::fillRectangle(pos.x, pos.y, junc.width, junc.width);
+    PD::fillRectangle(junction.x, junction.y, PATH_WIDTH, PATH_WIDTH);
 }
 
-void renderPath(uint16_t id)
+void renderPath(path_t path)
 {
-    path_t path;
-    bool success = findEntity(
-        globals.componentsPath,
-        SIZE(globals.componentsPath), &path, (std::function<bool(path_t)>)[id](path_t item)->bool { return item.entityID == id; });
-    if (!success)
-    {
-        LOG("can't find path:", id, "\n");
-        return;
-    }
-
-    uint16_t startID = path.start;
-    uint16_t endID = path.end;
-    // LOG("start:", startID, ", end:", endID,"w:", width, "\n");
-
-    junction_t junc;
-    success = findEntity(
-        globals.componentsJunction,
-        SIZE(globals.componentsJunction), &junc, (std::function<bool(junction_t)>)[startID](junction_t item)->bool { return item.entityID == startID; });
-    if (!success)
-    {
-        LOG("can't find junction:", id, "\n");
-        return;
-    }
-
-    position_t startPos;
-    position_t endPos;
-    int16_t width = junc.width;
-    success = findEntity(
-        globals.componentsPos,
-        SIZE(globals.componentsPos), &startPos, (std::function<bool(position_t)>)[startID](position_t item)->bool { return item.entityID == startID; });
-    if (!success)
-    {
-        LOG("can't find start pos:", id, "\n");
-        return;
-    }
-    success = findEntity(
-        globals.componentsPos,
-        SIZE(globals.componentsPos), &endPos, (std::function<bool(position_t)>)[endID](position_t item)->bool { return item.entityID == endID; });
-    if (!success)
-    {
-        LOG("can't find end pos:", id, "\n");
-        return;
-    }
-
-    int16_t startX = startPos.x < endPos.x ? startPos.x : endPos.x;
-    int16_t startY = startPos.y < endPos.y ? startPos.y : endPos.y;
-
-    int w_x = abs(startPos.x - endPos.x);
-    int w_y = abs(startPos.y - endPos.y);
-
-    bool isHorizontal = startPos.y == endPos.y;
-
     PD::color = 2;
-    // LOG("start:", startPos_p->x," ", startPos_p->y, ", end:", endPos_p->x," ", endPos_p->y, "w:", width, "rX:",revX, " ", revY, "\n");
-    if (isHorizontal)
+    junction_t j1 = globals.junctions[path.nodes[0]];
+    junction_t j2 = globals.junctions[path.nodes[1]];
+
+    if (path._dir == HORIZONTAL)
     {
-        PD::fillRect(startX + width, startY, w_x - width, width);
+        if (j1.x > j2.x)
+        {
+            junction_t temp = j1;
+            j1 = j2;
+            j2 = temp;
+        }
+        PD::fillRect(j1.x, j1.y, j2.x - j1.x + PATH_WIDTH, PATH_WIDTH);
     }
     else
     {
-        PD::fillRect(startX, startY + width, width, w_y - width);
+        if (j1.y > j2.y)
+        {
+            junction_t temp = j1;
+            j1 = j2;
+            j2 = temp;
+        }
+        PD::fillRect(j1.x, j1.y, PATH_WIDTH, j2.y - j1.y + PATH_WIDTH);
     }
 }
 
 void renderCar(uint16_t id)
 {
 
-    position_t pos;
-    bool success = findEntity(
-        globals.componentsPos,
-        SIZE(globals.componentsPos), &pos, (std::function<bool(position_t)>)[id](position_t item)->bool { return item.entityID == id; });
-    if (!success)
-    {
-        LOG("can't find car pos:", id, "\n");
-        return;
-    }
-
     PD::color = 3;
-    PD::fillRect(pos.x, pos.y, 10, 5);
+    // PD::fillRect(pos.x, pos.y, 10, 5);
 }
 
 void renderAll()
 {
-    // LOG("\n");
-    for (uint16_t id = 1; id <= globals.entityCount; id++)
+    for (uint8_t i = 0; i != PATH_CNT; i++)
     {
-        view_t view;
-        bool success = findEntity(
-            globals.componentsView,
-            SIZE(globals.componentsView), &view, (std::function<bool(view_t)>)[id](view_t item)->bool { return item.entityID == id; });
-        if (!success)
-        {
-            LOG("view not found:", id, "\n");
-            continue;
-        }
-
-        uint32_t viewType = view.renderType;
-        // LOG("view found:", id, ",", view.renderType, " ");
-
-        switch (viewType)
-        {
-        case JUNCTION_RENDERER:
-        {
-            renderNode(id);
-            break;
-        }
-        case PATH_RENDER:
-        {
-            renderPath(id);
-            break;
-        }
-        case CAR_RENDER:
-        {
-            // LOG("CAR:", id, "\n");
-            renderCar(id);
-        }
-        }
+        renderPath(globals.paths[i]);
     }
+    
+    for (uint8_t i = 0; i != JUNCTION_CNT; i++)
+    {
+        renderJunction(globals.junctions[i]);
+    }
+
+    
 }

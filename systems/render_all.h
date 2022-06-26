@@ -1,12 +1,12 @@
 #pragma once
 
 #include <Pokitto.h>
-#include "components/pos.h"
-#include "components/view.h"
-#include "global_store.h"
+#include "../data/game-types.h"
 
-void renderNode(uint16_t id);
-void renderPath(uint16_t id);
+#define PATH_WIDTH 10 
+
+void renderJunction(junction_t junction);
+void renderPath(path_t path);
 void renderCar(uint16_t id);
 
 void renderAll();
