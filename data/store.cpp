@@ -6,6 +6,7 @@ global_t globals;
 void initStore()
 {
 
+
     globals.junctions[0] = {10, 10, 0};
     globals.junctions[1] = {10, 100, 0};
     globals.junctions[2] = {100, 10, 0};

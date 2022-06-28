@@ -2,6 +2,12 @@
 
 #include <Pokitto.h>
 
+#define PATH_WIDTH 10 
+#define HALF_PATH_WIDTH PATH_WIDTH/2
+#define CAR_SPEED 8
+#define LANE_OFFSET 1
+#define CAR_SIZE 2
+
 enum dirEnum
 {
     HORIZONTAL,
@@ -26,5 +32,5 @@ struct car_t
     bool isActive;
     unsigned int dir:1;
     unsigned int path:6;
-    uint8_t pos;
+    uint16_t pos;
 };
