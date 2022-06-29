@@ -25,6 +25,17 @@ void generateCars(uint32_t ts)
             int8_t dir = getPathDir(j1, j2);
             uint8_t len = getPathLenght(path);
             uint16_t pos = dir == 1 ? 0 : (len - 1) << 8;
+
+            if (generator->lastId >= 0)
+            {
+                car_t *last_car_p = &(globals.cars[generator->lastId]);
+                int32_t dist = abs((last_car_p->pos >> 8) - (pos >> 8));
+                if (dist <= CAR_SIZE + CAR_GAP)
+                {
+                    continue;
+                }
+            }
+
             //   LOG(" GEN:", i, " CAR id:", id, " dir:", dir, " len:", len, " pos:", pos );
             globals.cars[id] = {
                 true,
@@ -32,7 +43,7 @@ void generateCars(uint32_t ts)
                 dir > 0 ? 1 : 0,   // dir
                 generator->pathId, // path
                 pos,               // pos
-                generator->lastId       // preceding
+                generator->lastId  // preceding
             };
             generator->lastId = id;
         }
@@ -50,14 +61,14 @@ void moveCars(uint32_t time)
         uint8_t path_lenght = getPathLenght(&(globals.paths[car.path]));
         int32_t value = car.pos;
         value += (car.dir ? 1 : -1) * CAR_SPEED * (time >> 1);
-        if (value > 256 * (path_lenght))
+        if (value > 256 * (path_lenght - PATH_WIDTH) && car.dir)
         {
-            value = 256 * (path_lenght);
+            value = 256 * (path_lenght - PATH_WIDTH);
         }
 
-        if (value < 0)
+        if (value < (PATH_WIDTH << 8) && !car.dir)
         {
-            value = 0;
+            value = (PATH_WIDTH << 8);
         }
 
         globals.cars[i].pos = value;
@@ -74,9 +85,9 @@ void stopCars(void)
             continue;
 
         int32_t value = car->pos;
-        path_t * path_p = &(globals.paths[car->path]);
+        path_t *path_p = &(globals.paths[car->path]);
         uint8_t path_lenght = getPathLenght(path_p);
-        if (value == 256 * (path_lenght) || value == 0)
+        if (value == 256 * (path_lenght - PATH_WIDTH) || value == (PATH_WIDTH << 8))
         {
             car->isStopped = true;
             continue;
@@ -94,9 +105,37 @@ void stopCars(void)
         if (dist < CAR_SIZE + CAR_GAP)
         {
             car->isStopped = true;
-            car->pos = precedingCar->pos + (CAR_SIZE + CAR_GAP << 8) * (car->dir ? -1 : 1) ;
+            car->pos = precedingCar->pos + (CAR_SIZE + CAR_GAP << 8) * (car->dir ? -1 : 1);
         }
     }
+}
+
+void changePath(void)
+{
+    // for (uint8_t i = 0; i != SIZE(globals.cars); i++)
+    // {
+    //     car_t *car = &(globals.cars[i]);
+    //     if (!car->isActive)
+    //         continue;
+
+    //     int32_t value = car->pos;
+    //     if (value == 256 * (path_lenght) || value == 0)
+    //     {
+    //         path_t *path_p = &(globals.paths[car->path]);
+    //         uint8_t junction_id = path_p->nodes[value == 0 ? 0 : 1];
+
+    //         path_t *paths[3];
+    //         uint8_t poi = 0;
+    //         for (uint8_t i = 0; i < PATH_CNT; i++)
+    //         {
+    //             path_t *path = &(globals.paths[i]) if ((path->nodes[0] == junction_id || path->nodes[1] == junction_id) && car->path != i)
+    //             {
+    //                 paths[poi] = path;
+    //                 poi++;
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 void runSystems(uint32_t ts)

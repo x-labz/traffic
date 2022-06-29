@@ -4,10 +4,11 @@
 
 #define PATH_WIDTH 10
 #define HALF_PATH_WIDTH PATH_WIDTH / 2
-#define CAR_SPEED 8
+#define CAR_SPEED 28
 #define LANE_OFFSET 1
 #define CAR_SIZE 2
 #define GENERATE_INTERVAL 1000
+
 #define CAR_GAP 2
 
 //  __attribute__((packed))
@@ -20,8 +21,6 @@ enum dirEnum
 
 enum junctionType
 {
-    GENERATOR,
-    DRAIN,
     TURN_BACK,
     NONE
 };
