@@ -28,9 +28,13 @@ void generateCars(uint32_t ts)
             //   LOG(" GEN:", i, " CAR id:", id, " dir:", dir, " len:", len, " pos:", pos );
             globals.cars[id] = {
                 true,
+                false,
                 dir > 0 ? 1 : 0,   // dir
                 generator->pathId, // path
-                pos};              // pos
+                pos,               // pos
+                generator->lastId       // preceding
+            };
+            generator->lastId = id;
         }
     }
 }
@@ -40,7 +44,7 @@ void moveCars(uint32_t time)
     for (uint8_t i = 0; i != SIZE(globals.cars); i++)
     {
         car_t car = globals.cars[i];
-        if (!car.isActive)
+        if (!car.isActive || car.isStopped)
             continue;
 
         uint8_t path_lenght = getPathLenght(&(globals.paths[car.path]));
@@ -61,10 +65,45 @@ void moveCars(uint32_t time)
     }
 }
 
+void stopCars(void)
+{
+    for (uint8_t i = 0; i != SIZE(globals.cars); i++)
+    {
+        car_t *car = &(globals.cars[i]);
+        if (!car->isActive)
+            continue;
+
+        int32_t value = car->pos;
+        path_t * path_p = &(globals.paths[car->path]);
+        uint8_t path_lenght = getPathLenght(path_p);
+        if (value == 256 * (path_lenght) || value == 0)
+        {
+            car->isStopped = true;
+            continue;
+        }
+
+        if (car->precedingId < 0)
+            continue;
+
+        car_t *precedingCar = &(globals.cars[car->precedingId]);
+        if (!precedingCar->isStopped)
+            continue;
+
+        int32_t dist = abs((car->pos >> 8) - (precedingCar->pos >> 8));
+        // LOG(" dist ", dist, " car ", (car->pos >> 8), " pre ",(precedingCar->pos >> 8), " id ", i , " pre ", car->precedingId);
+        if (dist < CAR_SIZE + CAR_GAP)
+        {
+            car->isStopped = true;
+            car->pos = precedingCar->pos + (CAR_SIZE + CAR_GAP << 8) * (car->dir ? -1 : 1) ;
+        }
+    }
+}
+
 void runSystems(uint32_t ts)
 {
     uint32_t time = ts - globals.last_ts;
     generateCars(ts);
     moveCars(time);
+    stopCars();
     renderAll();
 }
