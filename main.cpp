@@ -17,8 +17,9 @@ int main()
     PD::invisiblecolor = 0;
 
     LOG("started \n");
-    initStore();
     uint32_t ts = PC::getTime();
+    initStore(ts);
+    
 
     PC::begin();
 
@@ -28,7 +29,7 @@ int main()
             continue;
 
         ts = PC::getTime();
-        runSystems(ts- globals.last_ts);
+        runSystems(ts);
         globals.last_ts = ts;
     }
     
