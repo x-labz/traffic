@@ -19,10 +19,9 @@ int main()
     LOG("started \n");
     uint32_t ts = PC::getTime();
     initStore(ts);
-    
 
     PC::begin();
-
+    srand(time(0));
     while (PC::isRunning())
     {
         if (!PC::update())
@@ -32,6 +31,6 @@ int main()
         runSystems(ts);
         globals.last_ts = ts;
     }
-    
+
     return 0;
 }

@@ -17,7 +17,7 @@ void renderPath(path_t path)
     junction_t j1 = globals.junctions[path.nodes[0]];
     junction_t j2 = globals.junctions[path.nodes[1]];
 
-    if (path._dir == HORIZONTAL)
+    if (path._dir.x != 0)
     {
         if (j1.x > j2.x)
         {
@@ -48,7 +48,7 @@ void renderCar(car_t car)
     uint32_t pos = (car.pos) >> 8;
     uint8_t startX = j1.x > j2.x ? j2.x : j1.x;
     uint8_t startY = j1.y > j2.y ? j2.y : j1.y;
-    int16_t offset = (car.dir ? -LANE_OFFSET - CAR_SIZE :  LANE_OFFSET) ;
+    int16_t offset = (car.dir == 1 ? -LANE_OFFSET - CAR_SIZE :  LANE_OFFSET) ;
     if (j1.x == j2.x)
     {
         startY += pos;

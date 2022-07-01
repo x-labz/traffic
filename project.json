@@ -525,6 +525,12 @@
 		},
 		"\\data\\selectors.h": {
 			"sdcard": false
+		},
+		"\\utils\\utils.cpp": {
+			"sdcard": false
+		},
+		"\\utils\\utils.h": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

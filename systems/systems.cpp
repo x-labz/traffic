@@ -19,12 +19,10 @@ void generateCars(uint32_t ts)
 
             path_t *path = &(globals.paths[generator->pathId]);
 
-            junction_t *j1 = &(globals.junctions[generator->junctionId]);
-            junction_t *j2 = &(globals.junctions[path->nodes[path->nodes[0] == generator->junctionId ? 1 : 0]]);
-
-            int8_t dir = getPathDir(j1, j2);
-            uint8_t len = getPathLenght(path);
-            uint16_t pos = dir == 1 ? 0 : (len - 1) << 8;
+            bool isReversed = path->nodes[0] != generator->junctionId;
+            int8_t dir = (path->_dir.x == 0 ? path->_dir.y : path->_dir.x) * (isReversed ? -1 : 1);
+            uint8_t len = path->_len;
+            uint16_t pos = isReversed ? (len - 1) << 8 : 0;
 
             if (generator->lastId >= 0)
             {
@@ -36,11 +34,11 @@ void generateCars(uint32_t ts)
                 }
             }
 
-            //   LOG(" GEN:", i, " CAR id:", id, " dir:", dir, " len:", len, " pos:", pos );
+            // LOG(" GEN:", i, " CAR id:", id, " dir:", dir, " len:", len, " pos:", pos);
             globals.cars[id] = {
                 true,
                 false,
-                dir > 0 ? 1 : 0,   // dir
+                dir,               // dir
                 generator->pathId, // path
                 pos,               // pos
                 generator->lastId  // preceding
@@ -58,21 +56,20 @@ void moveCars(uint32_t time)
         if (!car.isActive || car.isStopped)
             continue;
 
-        uint8_t path_lenght = getPathLenght(&(globals.paths[car.path]));
+        uint8_t path_lenght = globals.paths[car.path]._len;
         int32_t value = car.pos;
-        value += (car.dir ? 1 : -1) * CAR_SPEED * (time >> 1);
-        if (value > 256 * (path_lenght - PATH_WIDTH) && car.dir)
+        value += car.dir * CAR_SPEED * (time >> 1);
+        if (value > PATH_END_HIGH(path_lenght) && car.dir == 1)
         {
-            value = 256 * (path_lenght - PATH_WIDTH);
+            value = PATH_END_HIGH(path_lenght);
         }
 
-        if (value < (PATH_WIDTH << 8) && !car.dir)
+        if (value < PATH_END_LOW && car.dir == -1)
         {
-            value = (PATH_WIDTH << 8);
+            value = PATH_END_LOW;
         }
 
         globals.cars[i].pos = value;
-        globals.cars[i].dir = car.dir;
     }
 }
 
@@ -86,8 +83,8 @@ void stopCars(void)
 
         int32_t value = car->pos;
         path_t *path_p = &(globals.paths[car->path]);
-        uint8_t path_lenght = getPathLenght(path_p);
-        if (value == 256 * (path_lenght - PATH_WIDTH) || value == (PATH_WIDTH << 8))
+        uint8_t path_lenght = path_p->_len;
+        if (value == PATH_END_HIGH(path_lenght) || value == PATH_END_LOW)
         {
             car->isStopped = true;
             continue;
@@ -101,41 +98,76 @@ void stopCars(void)
             continue;
 
         int32_t dist = abs((car->pos >> 8) - (precedingCar->pos >> 8));
-        // LOG(" dist ", dist, " car ", (car->pos >> 8), " pre ",(precedingCar->pos >> 8), " id ", i , " pre ", car->precedingId);
+        // LOG(" dist ", dist, " car ", (car->pos >> 8), " pre pos ", (precedingCar->pos >> 8), " id ", i, " pre ", car->precedingId, "\n");
         if (dist < CAR_SIZE + CAR_GAP)
         {
             car->isStopped = true;
-            car->pos = precedingCar->pos + (CAR_SIZE + CAR_GAP << 8) * (car->dir ? -1 : 1);
+            car->pos = precedingCar->pos - (((CAR_SIZE + CAR_GAP) << 8) * car->dir);
         }
     }
 }
 
 void changePath(void)
 {
-    // for (uint8_t i = 0; i != SIZE(globals.cars); i++)
-    // {
-    //     car_t *car = &(globals.cars[i]);
-    //     if (!car->isActive)
-    //         continue;
+    for (uint8_t i = 0; i != SIZE(globals.cars); i++)
+    {
+        car_t *car = &(globals.cars[i]);
+        if (!car->isActive)
+            continue;
 
-    //     int32_t value = car->pos;
-    //     if (value == 256 * (path_lenght) || value == 0)
-    //     {
-    //         path_t *path_p = &(globals.paths[car->path]);
-    //         uint8_t junction_id = path_p->nodes[value == 0 ? 0 : 1];
+        path_t *path_p = &(globals.paths[car->path]);
+        int32_t value = car->pos;
+        uint8_t path_length = path_p->_len;
+        if (value == PATH_END_HIGH(path_length) || value == PATH_END_LOW)
+        {
 
-    //         path_t *paths[3];
-    //         uint8_t poi = 0;
-    //         for (uint8_t i = 0; i < PATH_CNT; i++)
-    //         {
-    //             path_t *path = &(globals.paths[i]) if ((path->nodes[0] == junction_id || path->nodes[1] == junction_id) && car->path != i)
-    //             {
-    //                 paths[poi] = path;
-    //                 poi++;
-    //             }
-    //         }
-    //     }
-    // }
+            uint8_t junction_id = path_p->nodes[value == 0 ? 0 : 1];
+            // direction_t path_props = getPathProperties(junction_id, car->path);
+
+            int8_t path_forward_id = -1;
+            int8_t path_left_id = -1;
+
+            direction_t left_path_props = getLeftPath(path_props);
+            for (uint8_t i = 0; i < PATH_CNT; i++)
+            {
+                path_t *path = &(globals.paths[i]);
+                if ((path->nodes[0] == junction_id || path->nodes[1] == junction_id) && car->path != i)
+                {
+                    if (path->_dir == path_p->_dir)
+                    {
+                        path_forward_id = i;
+                    }
+                    direction_t this_path_props = getPathProperties(junction_id, i);
+                    if (this_path_props.dir == left_path_props.dir && this_path_props.horizontal_vertical == left_path_props.horizontal_vertical)
+                    {
+                        path_left_id = i;
+                    }
+                }
+            }
+            if (path_forward_id == -1 && path_left_id == -1)
+            {
+                continue;
+            }
+            int8_t next_path_id;
+            if (path_forward_id != -1 && path_left_id != -1)
+            {
+                uint8_t choice = rand() % 2;
+                next_path_id = choice ? path_forward_id : path_left_id;
+            }
+            if (path_forward_id == -1 && path_left_id != -1)
+            {
+                next_path_id = path_left_id;
+            }
+            if (path_forward_id != -1 && path_left_id == -1)
+            {
+                next_path_id = path_forward_id;
+            }
+
+            // globals.paths[car->path].
+            car->path = next_path_id;
+            // car->pos =
+        }
+    }
 }
 
 void runSystems(uint32_t ts)
