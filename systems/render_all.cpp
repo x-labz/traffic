@@ -48,20 +48,22 @@ void renderCar(car_t car)
     uint32_t pos = (car.pos) >> 8;
     uint8_t startX = j1.x > j2.x ? j2.x : j1.x;
     uint8_t startY = j1.y > j2.y ? j2.y : j1.y;
-    int16_t offset = (car.dir == 1 ? -LANE_OFFSET - CAR_SIZE :  LANE_OFFSET) ;
     if (j1.x == j2.x)
     {
+        int16_t offset = (car.dir == 1 ? -LANE_OFFSET - CAR_SIZE : LANE_OFFSET);
+
         startY += pos;
-        startX += offset  ;
+        startX += offset;
     }
     else
     {
+        int16_t offset = (car.dir == 1 ? LANE_OFFSET : -LANE_OFFSET);
         startX += pos;
-        startY += offset ;
+        startY += offset;
     }
 
     PD::color = 3;
-    PD::fillRect(startX , startY , CAR_SIZE, CAR_SIZE);
+    PD::fillRect(startX, startY, CAR_SIZE, CAR_SIZE);
 }
 
 void renderAll()

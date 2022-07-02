@@ -7,7 +7,7 @@
 #define CAR_SPEED 28
 #define LANE_OFFSET 1
 #define CAR_SIZE 2
-#define GENERATE_INTERVAL 1000
+#define GENERATE_INTERVAL 2000
 #define PATH_END_HIGH(len) ((len - HALF_PATH_WIDTH - CAR_SIZE) << 8)
 #define PATH_END_LOW (HALF_PATH_WIDTH << 8)
 
