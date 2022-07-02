@@ -12,15 +12,25 @@ using PB = Pokitto::Buttons;
 int main()
 {
     // PS::ampEnable(1);
+    PC::begin();
 
     PD::persistence = true;
     PD::invisiblecolor = 0;
+   
+    PD::color = 13;
+    PD::fillRect(0, 0, 219, 175);
+
+    for (uint8_t i = 0; i != 16; i++)
+    {
+        PD::color = i;
+        PD::fillRect(10 + 12 * i, 150, 10, 10);
+    }
 
     LOG("started \n");
     uint32_t ts = PC::getTime();
     initStore(ts);
 
-    PC::begin();
+    
     srand(time(0));
     while (PC::isRunning())
     {

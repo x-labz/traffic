@@ -3,8 +3,8 @@
 #include "game-types.h"
 
 #define SIZE(_Array) (sizeof(_Array) / sizeof(_Array[0]))
-#define JUNCTION_CNT 3
-#define PATH_CNT 2
+#define JUNCTION_CNT 5
+#define PATH_CNT 4
 #define GEN_CTN 2
 
 struct global_t

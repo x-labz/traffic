@@ -15,7 +15,10 @@ void generateCars(uint32_t ts)
         {
             generator->last_gen_ts = ts;
 
-            uint8_t id = getInactiveCar();
+            int8_t id = getInactiveCar();
+
+            if (id == -1)
+                continue;
 
             path_t *path = &(globals.paths[generator->pathId]);
 

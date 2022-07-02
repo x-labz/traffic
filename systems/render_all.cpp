@@ -7,35 +7,35 @@ using PD = Pokitto::Display;
 void renderJunction(junction_t junction)
 {
 
-    PD::color = 1;
-    PD::drawRect(junction.x - HALF_PATH_WIDTH, junction.y - HALF_PATH_WIDTH, PATH_WIDTH, PATH_WIDTH);
+    // PD::color = 1;
+    // PD::drawRect(junction.x - HALF_PATH_WIDTH, junction.y - HALF_PATH_WIDTH, PATH_WIDTH, PATH_WIDTH);
 }
 
 void renderPath(path_t path)
 {
-    PD::color = 2;
+    PD::color = 9;
     junction_t j1 = globals.junctions[path.nodes[0]];
     junction_t j2 = globals.junctions[path.nodes[1]];
 
     if (path._dir.x != 0)
     {
-        if (j1.x > j2.x)
-        {
-            junction_t temp = j1;
-            j1 = j2;
-            j2 = temp;
-        }
         PD::fillRect(j1.x - HALF_PATH_WIDTH, j1.y - HALF_PATH_WIDTH, j2.x - j1.x + PATH_WIDTH, PATH_WIDTH);
+        uint8_t len = j2.x - j1.x - PATH_WIDTH;
+        for (uint8_t i = 0; i < (len / 10); i++)
+        {
+            PD::color = 4;
+            PD::drawRow(HALF_PATH_WIDTH + j1.x + i * 10, HALF_PATH_WIDTH + j1.x + i * 10 + 4, j1.y);
+        }
     }
     else
     {
-        if (j1.y > j2.y)
-        {
-            junction_t temp = j1;
-            j1 = j2;
-            j2 = temp;
-        }
         PD::fillRect(j1.x - HALF_PATH_WIDTH, j1.y - HALF_PATH_WIDTH, PATH_WIDTH, j2.y - j1.y + PATH_WIDTH);
+        uint8_t len = j2.y - j1.y - PATH_WIDTH;
+        for (uint8_t i = 0; i < (len / 10); i++)
+        {
+            PD::color = 4;
+            PD::drawColumn(j1.x, HALF_PATH_WIDTH + j1.y + i * 10, HALF_PATH_WIDTH + j1.y + i * 10 + 4);
+        }
     }
 }
 
@@ -62,8 +62,8 @@ void renderCar(car_t car)
         startY += offset;
     }
 
-    PD::color = 3;
-    PD::fillRect(startX, startY, CAR_SIZE, CAR_SIZE);
+    PD::color = 8;
+    PD::fillRect(startX, startY, CAR_SIZE + 1, CAR_SIZE);
 }
 
 void renderAll()

@@ -350,7 +350,7 @@
 			"sdcard": false
 		},
 		"\\traffic.bin": {
-			"sdcard": false
+			"sdcard": true
 		},
 		"\\components": {
 			"sdcard": false

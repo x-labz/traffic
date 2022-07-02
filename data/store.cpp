@@ -23,10 +23,14 @@ void initStore(uint32_t ts)
     globals.junctions[0] = {10, 10, NONE};
     globals.junctions[1] = {10, 100, NONE};
     globals.junctions[2] = {100, 10, NONE};
+    globals.junctions[3] = {100, 100, NONE};
+    globals.junctions[4] = {150, 10, NONE};
 
-    globals.generators[0] = {0, 0, ts, -1};
-    globals.generators[1] = {1, 0, ts, -1};
+    globals.generators[0] = {0, 0, 0, -1};
+    globals.generators[1] = {1, 0, 0, -1};
 
     globals.paths[0] = genPath(0, 1);
     globals.paths[1] = genPath(0, 2);
+    globals.paths[2] = genPath(2, 3);
+    globals.paths[3] = genPath(2, 4);
 }

@@ -23,7 +23,7 @@ dir_t getLeftPathDir(dir_t props)
 
 uint8_t getInactiveCar(void)
 {
-    uint8_t result;
+    int8_t result = -1;
     for (uint8_t i = 0; i < SIZE(globals.cars); i++)
     {
         if (!globals.cars[i].isActive)
