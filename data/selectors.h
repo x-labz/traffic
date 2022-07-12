@@ -19,6 +19,7 @@ dir_t getLeftPathDir(dir_t props)
     if (props.x == 1 && props.y == 0)
         return {0, 1};
     LOG("invalid direction ", props.x, props.y, "\n");
+    return {0,0};
 }
 
 uint8_t getInactiveCar(void)

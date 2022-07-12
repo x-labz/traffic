@@ -9,7 +9,7 @@ using PD = Pokitto::Display;
 using PB = Pokitto::Buttons;
 // using PS = Pokitto::Sound ;
 
-int main()
+int main() 
 {
     // PS::ampEnable(1);
     PC::begin();

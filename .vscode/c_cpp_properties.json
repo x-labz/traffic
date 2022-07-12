@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:/_portable/femtoide/PokittoLib/Pokitto/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -17,7 +18,8 @@
         {
             "name": "w32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:/_portable/femtoide/PokittoLib/Pokitto/**"
             ],
             "defines": [
                 "_DEBUG",

@@ -531,6 +531,30 @@
 		},
 		"\\utils\\utils.h": {
 			"sdcard": false
+		},
+		"\\include": {
+			"sdcard": false
+		},
+		"\\lib": {
+			"sdcard": false
+		},
+		"\\platformio.ini": {
+			"sdcard": false
+		},
+		"\\src": {
+			"sdcard": false
+		},
+		"\\test": {
+			"sdcard": false
+		},
+		"\\include\\README": {
+			"sdcard": false
+		},
+		"\\lib\\README": {
+			"sdcard": false
+		},
+		"\\test\\README": {
+			"sdcard": false
 		}
 	},
 	"ideVersion": 10000,

@@ -5,48 +5,55 @@
 #include "data/selectors.h"
 #include "data/game-types.h"
 
-void generateCars(uint32_t ts)
+void generateCars()
 {
     for (uint8_t i = 0; i < GEN_CTN; i++)
     {
         generator_t *generator = &(globals.generators[i]);
+        path_t *path = &(globals.paths[generator->pathId]);
 
-        if (ts > generator->last_gen_ts + GENERATE_INTERVAL)
+        int8_t last_car_id = generator->dir == 1 ? path->min_id : path->max_id;
+
+        int16_t dist = (99 << 8);
+        if (last_car_id >= 0)
         {
-            generator->last_gen_ts = ts;
+            int16_t last_car_pos = globals.cars[last_car_id].pos;
+            dist = generator->dir == 1 ? last_car_pos : (path->_len << 8) - last_car_pos;
+            // LOG("last car id:", last_car_id, " pos: ", last_car_pos, " dist:", dist, "\n");
+        }
+        if (dist < 0)
+            LOG("neg dist ", i, dist);
 
+        if (dist > GENERATE_INTERVAL_PX << 8)
+        {
             int8_t id = getInactiveCar();
 
             if (id == -1)
                 continue;
 
-            path_t *path = &(globals.paths[generator->pathId]);
-
-            bool isReversed = path->nodes[0] != generator->junctionId;
-            int8_t dir = (path->_dir.x == 0 ? path->_dir.y : path->_dir.x) * (isReversed ? -1 : 1);
+            bool isReversed = generator->dir == -1;
+            // int8_t dir = (path->_dir.x == 0 ? path->_dir.y : path->_dir.x) * (isReversed ? -1 : 1);
             uint8_t len = path->_len;
             uint16_t pos = isReversed ? (len - 1) << 8 : 0;
 
-            if (generator->lastId >= 0)
-            {
-                car_t *last_car_p = &(globals.cars[generator->lastId]);
-                int32_t dist = abs((last_car_p->pos >> 8) - (pos >> 8));
-                if (dist <= CAR_SIZE + CAR_GAP)
-                {
-                    continue;
-                }
-            }
-
-            // LOG(" GEN:", i, " CAR id:", id, " dir:", dir, " len:", len, " pos:", pos);
+            LOG(" GEN:", i, " CAR id:", id, " path:", generator->pathId, " len:", len, " pos:", pos, "\n");
             globals.cars[id] = {
-                true,
-                false,
-                dir,               // dir
+                true,              // isActive
+                false,             // isStopped
+                generator->dir,    // dir
                 generator->pathId, // path
                 pos,               // pos
-                generator->lastId  // preceding
+                last_car_id        // preceding
             };
-            generator->lastId = id;
+
+            if (generator->dir == 1)
+            {
+                path->min_id = id;
+            }
+            else
+            {
+                path->max_id = id;
+            }
         }
     }
 }
@@ -55,21 +62,26 @@ void moveCars(uint32_t time)
 {
     for (uint8_t i = 0; i != SIZE(globals.cars); i++)
     {
-        car_t car = globals.cars[i];
-        if (!car.isActive || car.isStopped)
+        car_t *car = &(globals.cars[i]);
+        if (!car->isActive || car->isStopped)
             continue;
 
-        uint8_t path_length = globals.paths[car.path]._len;
-        int32_t value = car.pos;
-        value += car.dir * CAR_SPEED * (time >> 1);
-        if (value > PATH_END_HIGH(path_length) && car.dir == 1)
+        uint8_t path_length = globals.paths[car->path]._len;
+        // LOG("-Move ", "car:", i, " path:", car.path);
+        int32_t value = car->pos;
+        value += car->dir * CAR_SPEED * (time >> 1);
+        if (value > PATH_END_HIGH(path_length) && car->dir == 1)
         {
             value = PATH_END_HIGH(path_length);
+            car->isStopped = true;
+            LOG("move stopped at:", value, " car id: ", i, "\n");
         }
 
-        if (value < PATH_END_LOW && car.dir == -1)
+        if (value < PATH_END_LOW && car->dir == -1)
         {
             value = PATH_END_LOW;
+            car->isStopped = true;
+            LOG("move stopped at:", value, " car id: ", i, "\n");
         }
 
         globals.cars[i].pos = value;
@@ -81,17 +93,12 @@ void stopCars(void)
     for (uint8_t i = 0; i != SIZE(globals.cars); i++)
     {
         car_t *car = &(globals.cars[i]);
-        if (!car->isActive)
+        if (!car->isActive || car->isStopped)
             continue;
 
         int32_t value = car->pos;
         path_t *path_p = &(globals.paths[car->path]);
         uint8_t path_length = path_p->_len;
-        if (value == PATH_END_HIGH(path_length) || value == PATH_END_LOW)
-        {
-            car->isStopped = true;
-            continue;
-        }
 
         if (car->precedingId < 0)
             continue;
@@ -106,21 +113,22 @@ void stopCars(void)
         {
             car->isStopped = true;
             car->pos = precedingCar->pos - (((CAR_SIZE + CAR_GAP) << 8) * car->dir);
+            LOG("CAR stopped at:", car->pos, " car id: ", i, "\n");
         }
     }
 }
 
-void delIdFromGen(uint8_t id)
-{
-    for (uint8_t i = 0; i < GEN_CTN; i++)
-    {
-        generator_t *generator = &(globals.generators[i]);
-        if (generator->lastId == id)
-        {
-            generator->lastId = -1;
-        }
-    }
-}
+// void delIdFromGen(uint8_t id)
+// {
+//     for (uint8_t i = 0; i < GEN_CTN; i++)
+//     {
+//         generator_t *generator = &(globals.generators[i]);
+//         if (generator->lastId == id)
+//         {
+//             generator->lastId = -1;
+//         }
+//     }
+// }
 
 int8_t findLastCarIdOnPath(uint8_t path_id, int8_t dir)
 {
@@ -180,13 +188,13 @@ void changePath(void)
                 path_t *path = &(globals.paths[i]);
                 if ((path->nodes[0] == junction_id || path->nodes[1] == junction_id) && car->path != i)
                 {
-                    if (abs(path->_dir.x) == abs(car_path_p->_dir.x) && abs(path->_dir.y) == abs(car_path_p->_dir.y))
+                    if ((path->_dir.x) == (car_path_p->_dir.x) && (path->_dir.y) == (car_path_p->_dir.y))
                     {
                         path_forward_id = i;
                         next_car_dir = car_dir;
                     }
 
-                    if (abs(path->_dir.x) == abs(left_path_dir.x) && abs(path->_dir.y) == abs(left_path_dir.y))
+                    if ((path->_dir.x) == (left_path_dir.x) && (path->_dir.y) == (left_path_dir.y))
                     {
                         path_left_id = i;
                         next_car_dir = left_path_dir.x == -1 || left_path_dir.y == -1 ? -1 : 1;
@@ -237,10 +245,38 @@ void changePath(void)
             car->isStopped = false;
             car->dir = next_car_dir;
             car->path = next_path_id;
-            car->pos = next_car_dir == 1 ? (HALF_PATH_WIDTH << 8) : (next_path._len - HALF_PATH_WIDTH) << 8;
-            delIdFromGen(i);
+            if (next_path_id == path_forward_id)
+            {
+                car->pos = next_car_dir == 1 ? (-HALF_PATH_WIDTH * 256) : (next_path._len + HALF_PATH_WIDTH) << 8;
+            }
+            else
+            {
+                car->pos = next_car_dir == 1 ? (HALF_PATH_WIDTH << 8) : (next_path._len - HALF_PATH_WIDTH) << 8;
+            }
+            // delIdFromGen(i);
 
-            // LOG("CH ", i, " dir: ", car->dir, " pos: ", car->pos >> 8, " pre: ", car->precedingId, "\n");
+            LOG("CH ", i, " dir: ", car->dir, " pos: ", car->pos >> 8, " pre: ", car->precedingId, "\n");
+        }
+    }
+}
+
+void recycleCars()
+{
+    for (uint8_t car_i = 0; car_i != SIZE(globals.cars); car_i++)
+    {
+        car_t *car_p = &(globals.cars[car_i]);
+        if (!car_p->isActive || !car_p->isStopped)
+            continue;
+
+        for (uint8_t drain_i = 0; drain_i < DRAIN_CNT; drain_i++)
+        {
+            drain_t *drain_p = &(globals.drains[drain_i]);
+            // LOG("drainn check ", car_i, "dir: ", drain_p->dir, car_p->dir, " path id:", car_p->path, drain_p->path_id);
+            if (car_p->path == drain_p->path_id && drain_p->dir == car_p->dir)
+            {
+                car_p->isActive = false;
+                LOG("drain ", car_i, '\n');
+            }
         }
     }
 }
@@ -248,9 +284,10 @@ void changePath(void)
 void runSystems(uint32_t ts)
 {
     uint32_t time = ts - globals.last_ts;
-    generateCars(ts);
+    generateCars();
     moveCars(time);
     stopCars();
-    changePath();
+    // changePath();
+    recycleCars();
     renderAll();
 }

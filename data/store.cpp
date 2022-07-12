@@ -1,4 +1,4 @@
-    #include "store.h"
+#include "store.h"
 
 #include "../utils/utils.h"
 
@@ -13,24 +13,28 @@ path_t genPath(uint8_t j1_id, uint8_t j2_id)
                  getSgn(j2->y - j1->y)};
     uint8_t len = j1->x == j2->x ? j2->y - j1->y : j2->x - j1->x;
 
-    return {{j1_id, j2_id}, dir, len};
+    return {{j1_id, j2_id}, dir, len, -1, -1};
 }
 
 // path nodes always defined from top to bottom, or left to right
 void initStore(uint32_t ts)
 {
 
-    globals.junctions[0] = {10, 10, NONE};
-    globals.junctions[1] = {10, 100, NONE};
-    globals.junctions[2] = {100, 10, NONE};
-    globals.junctions[3] = {100, 100, NONE};
-    globals.junctions[4] = {150, 10, NONE};
+    globals.junctions[0] = {10, 0};
+    globals.junctions[1] = {10, 100};
+    globals.junctions[2] = {10, 170};
+    // globals.junctions[3] = {10, 170};
 
-    globals.generators[0] = {0, 0, 0, -1};
-    globals.generators[1] = {1, 0, 0, -1};
+    // globals.junctions[4] = {60, 20};
+
+    globals.generators[0] = {1, 0};
+    // globals.generators[1] = {1, 0, 0, -1};
 
     globals.paths[0] = genPath(0, 1);
-    globals.paths[1] = genPath(0, 2);
-    globals.paths[2] = genPath(2, 3);
-    globals.paths[3] = genPath(2, 4);
+    globals.paths[1] = genPath(1, 2);
+    // globals.paths[2] = genPath(2, 3);
+
+    // globals.paths[3] = genPath(1, 4);
+
+    globals.drains[0] = {1, 1};
 }

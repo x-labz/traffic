@@ -7,8 +7,8 @@ using PD = Pokitto::Display;
 void renderJunction(junction_t junction)
 {
 
-    // PD::color = 1;
-    // PD::drawRect(junction.x - HALF_PATH_WIDTH, junction.y - HALF_PATH_WIDTH, PATH_WIDTH, PATH_WIDTH);
+    PD::color = 1;
+    PD::drawRect(junction.x - HALF_PATH_WIDTH, junction.y - HALF_PATH_WIDTH, PATH_WIDTH, PATH_WIDTH);
 }
 
 void renderPath(path_t path)
