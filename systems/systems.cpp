@@ -165,11 +165,12 @@ void changePath(void)
     for (uint8_t i = 0; i != SIZE(globals.cars); i++)
     {
         car_t *car = &(globals.cars[i]);
-        if (!car->isActive)
+        if (!car->isActive || !car->isStopped)
             continue;
 
         path_t *car_path_p = &(globals.paths[car->path]);
         int32_t value = car->pos;
+        uint8_t orig_path_id = car->path ;
         uint8_t path_length = car_path_p->_len;
         if (value == PATH_END_HIGH(path_length) || value == PATH_END_LOW)
         {
@@ -222,15 +223,15 @@ void changePath(void)
                 next_path_id = path_forward_id;
             }
 
-            path_t next_path = globals.paths[next_path_id];
-            int8_t lastCarId = findLastCarIdOnPath(next_path_id, next_car_dir);
+            path_t * next_path = &(globals.paths[next_path_id]);
+            int8_t lastCarId =  next_car_dir == 1 ?  next_path->min_id : next_path->max_id; 
 
             int32_t lastCarPos = -1;
             if (lastCarId > -1)
             {
                 lastCarPos = globals.cars[lastCarId].pos;
             }
-            if (next_car_dir == -1 && lastCarId != -1 && lastCarPos >= ((next_path._len - PATH_WIDTH) << 8))
+            if (next_car_dir == -1 && lastCarId != -1 && lastCarPos >= ((next_path->_len - PATH_WIDTH) << 8))
             {
                 // LOG("dir -1 \n");
                 continue;
@@ -247,13 +248,25 @@ void changePath(void)
             car->path = next_path_id;
             if (next_path_id == path_forward_id)
             {
-                car->pos = next_car_dir == 1 ? (-HALF_PATH_WIDTH * 256) : (next_path._len + HALF_PATH_WIDTH) << 8;
+                car->pos = next_car_dir == 1 ? (-HALF_PATH_WIDTH * 256) : (next_path->_len + HALF_PATH_WIDTH) << 8;
             }
             else
             {
-                car->pos = next_car_dir == 1 ? (HALF_PATH_WIDTH << 8) : (next_path._len - HALF_PATH_WIDTH) << 8;
+                car->pos = next_car_dir == 1 ? (HALF_PATH_WIDTH << 8) : (next_path->_len - HALF_PATH_WIDTH) << 8;
             }
-            // delIdFromGen(i);
+            if ( next_car_dir == 1 ) {
+                next_path->min_id = i;
+            }
+            else {
+                next_path->max_id = i;
+            }
+            if (car_path_p->min_id == i) {
+                car_path_p->min_id = findLastCarIdOnPath(orig_path_id, car_dir) ;
+            }
+            if (car_path_p->max_id == i) {
+                car_path_p->max_id = findLastCarIdOnPath(orig_path_id, car_dir) ;
+           
+            }
 
             LOG("CH ", i, " dir: ", car->dir, " pos: ", car->pos >> 8, " pre: ", car->precedingId, "\n");
         }
@@ -287,7 +300,7 @@ void runSystems(uint32_t ts)
     generateCars();
     moveCars(time);
     stopCars();
-    // changePath();
+    changePath();
     recycleCars();
     renderAll();
 }
