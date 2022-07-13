@@ -20,7 +20,7 @@ void renderPath(path_t path)
     if (path._dir.x != 0)
     {
         PD::fillRect(j1.x - HALF_PATH_WIDTH, j1.y - HALF_PATH_WIDTH, j2.x - j1.x + PATH_WIDTH, PATH_WIDTH);
-        uint8_t len = j2.x - j1.x - PATH_WIDTH;
+        uint8_t len = j2.x - j1.x - HALF_PATH_WIDTH;
         for (uint8_t i = 0; i < (len / 10); i++)
         {
             PD::color = 4;
@@ -30,7 +30,7 @@ void renderPath(path_t path)
     else
     {
         PD::fillRect(j1.x - HALF_PATH_WIDTH, j1.y - HALF_PATH_WIDTH, PATH_WIDTH, j2.y - j1.y + PATH_WIDTH);
-        uint8_t len = j2.y - j1.y - PATH_WIDTH;
+        uint8_t len = j2.y - j1.y - HALF_PATH_WIDTH;
         for (uint8_t i = 0; i < (len / 10); i++)
         {
             PD::color = 4;
@@ -57,7 +57,7 @@ void renderCar(car_t car)
     }
     else
     {
-        int16_t offset = (car.dir == 1 ? LANE_OFFSET : -LANE_OFFSET);
+        int16_t offset = (car.dir == 1 ? LANE_OFFSET : -LANE_OFFSET - CAR_SIZE);
         startX += pos;
         startY += offset;
     }

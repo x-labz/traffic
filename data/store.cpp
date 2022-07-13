@@ -20,10 +20,10 @@ path_t genPath(uint8_t j1_id, uint8_t j2_id)
 void initStore(uint32_t ts)
 {
 
-    globals.junctions[0] = {10, 0};
-    globals.junctions[1] = {10, 100};
-    globals.junctions[2] = {10, 170};
-    // globals.junctions[3] = {10, 170};
+    globals.junctions[0] = {100, 0};
+    globals.junctions[1] = {100, 100};
+    globals.junctions[2] = {100, 170};
+    globals.junctions[3] = {0, 100};
 
     // globals.junctions[4] = {60, 20};
 
@@ -32,7 +32,7 @@ void initStore(uint32_t ts)
 
     globals.paths[0] = genPath(0, 1);
     globals.paths[1] = genPath(1, 2);
-    // globals.paths[2] = genPath(2, 3);
+    globals.paths[2] = genPath(3, 1);
 
     // globals.paths[3] = genPath(1, 4);
 
